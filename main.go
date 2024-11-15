@@ -1,38 +1,22 @@
 package main
 
+import "fmt"
+
 func main() {
-
+	slice1 := []string{"apple", "banana", "cherry", "date", "43", "lead", "gno1"}
+	slice2 := []string{"banana", "date", "fig"}
+	fmt.Println(FindUnMatch(slice1, slice2))
 }
 
-type StringIntMap struct {
-	mapa map[string]int
-}
-
-func (s *StringIntMap) NewStringIntMap() {
-	s.mapa = make(map[string]int)
-}
-
-func (s *StringIntMap) Add(key string, value int) {
-	s.mapa[key] = value
-}
-
-func (s *StringIntMap) Remove(key string) {
-	delete(s.mapa, key)
-}
-
-func (s *StringIntMap) Copy() (copied map[string]int) {
-	for i, v := range s.mapa {
-		copied[i] = v
+func FindUnMatch(s1, s2 []string) (s3 []string) {
+	exist := make(map[string]interface{})
+	for _, v := range s2 {
+		exist[v] = nil
 	}
-	return
-}
-
-func (s *StringIntMap) Exists(key string) bool {
-	_, ok := s.mapa[key]
-	return ok
-}
-
-func (s *StringIntMap) Get(key string) (int, bool) {
-	v, ok := s.mapa[key]
-	return v, ok
+	for _, v := range s1 {
+		if _, ok := exist[v]; !ok {
+			s3 = append(s3, v)
+		}
+	}
+	return s3
 }
