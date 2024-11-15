@@ -3,20 +3,23 @@ package main
 import "fmt"
 
 func main() {
-	slice1 := []string{"apple", "banana", "cherry", "date", "43", "lead", "gno1"}
-	slice2 := []string{"banana", "date", "fig"}
-	fmt.Println(FindUnMatch(slice1, slice2))
+	a := []int{65, 3, 58, 678, 64}
+	b := []int{64, 2, 3, 43}
+	fmt.Println(FindMatch(a, b))
 }
 
-func FindUnMatch(s1, s2 []string) (s3 []string) {
-	exist := make(map[string]interface{})
-	for _, v := range s2 {
-		exist[v] = nil
-	}
-	for _, v := range s1 {
-		if _, ok := exist[v]; !ok {
-			s3 = append(s3, v)
+func FindMatch(a1, a2 []int) (bool, []int) {
+	var a3 []int
+	found := false
+	for _, v := range a2 {
+		for _, v2 := range a1 {
+			if v2 == v {
+				a3 = append(a3, v2)
+			}
 		}
 	}
-	return s3
+	if len(a3) != 0 {
+		found = true
+	}
+	return found, a3
 }
