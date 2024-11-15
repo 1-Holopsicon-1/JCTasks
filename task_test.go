@@ -5,40 +5,55 @@ import (
 	"testing"
 )
 
-func TestSliceExample(t *testing.T) {
-	slice := []int{2, 4, 6, 5}
-	oddNums := append(slice[:3], slice[3+1:]...)
-	if !reflect.DeepEqual(SliceExample(slice), oddNums) {
-		t.Errorf("Output %q not equal to expected %q", oddNums, SliceExample(slice))
-	}
-
-}
-
-func TestAddElement(t *testing.T) {
-	slice := []int{2, 4, 6, 5}
-	newSlice := []int{2, 4, 6, 5, 7}
-	if !reflect.DeepEqual(AddElement(slice, 7), newSlice) {
-		t.Errorf("Output %q not equal to expected %q", newSlice, AddElement(slice, 7))
+func TestStringIntMap_Add(t *testing.T) {
+	var strIMap StringIntMap
+	strIMap.NewStringIntMap()
+	myMap := make(map[string]int)
+	myMap["hello"] = 1
+	strIMap.Add("hello", 1)
+	if !reflect.DeepEqual(myMap, strIMap.mapa) {
+		t.Errorf("Output %q not equal to expected %q", strIMap.mapa, myMap)
 	}
 }
 
-func TestCopySlice(t *testing.T) {
-	slice := []int{2, 4, 6, 5}
-	copySl := CopySlice(slice)
-	if !reflect.DeepEqual(copySl, slice) {
-		t.Errorf("Output %q not equal to expected %q", copySl, CopySlice(slice))
-	}
-	copySl = append(copySl, 7)
-	if reflect.DeepEqual(copySl, slice) {
-		t.Errorf("New slice changed with original")
+func TestStringIntMap_Remove(t *testing.T) {
+	var strIMap StringIntMap
+	strIMap.NewStringIntMap()
+	strIMap.Add("hello", 1)
+	strIMap.Add("delete", 21312312)
+	strIMap.Remove("delete")
+	_, ok := strIMap.mapa["delete"]
+	if ok {
+		t.Errorf("Still exist %q", strIMap.mapa)
 	}
 }
 
-func TestRemoveElement(t *testing.T) {
-	slice := []int{2, 4, 6, 5}
-	output := RemoveElement(slice, 1)
-	expected := []int{2, 6, 5}
-	if !reflect.DeepEqual(output, expected) {
-		t.Errorf("Output %q not equal to expected %q", output, expected)
+func TestStringIntMap_Copy(t *testing.T) {
+	var strIMap StringIntMap
+	strIMap.NewStringIntMap()
+	myMap := make(map[string]int)
+	myMap = strIMap.Copy()
+	if reflect.DeepEqual(myMap, strIMap.mapa) {
+		t.Errorf("Output %q not equal to expected %q", myMap, strIMap.mapa)
+	}
+}
+
+func TestStringIntMap_Exists(t *testing.T) {
+	var strIMap StringIntMap
+	strIMap.NewStringIntMap()
+	strIMap.Add("check", 123456)
+	if !strIMap.Exists("check") {
+		t.Error("Error cant find")
+
+	}
+}
+
+func TestStringIntMap_Get(t *testing.T) {
+	var strIMap StringIntMap
+	strIMap.NewStringIntMap()
+	strIMap.Add("check", 123456)
+	if v, ok := strIMap.Get("check"); !ok || v != 123456 {
+		t.Errorf("Output %q not equal to expected %q", v, 123456)
+
 	}
 }
