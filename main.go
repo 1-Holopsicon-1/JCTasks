@@ -1,63 +1,56 @@
 package main
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
-	"reflect"
+	"math/rand"
 )
 
 func main() {
-	var numDecimal int = 42           // Десятичная система
-	var numOctal int = 052            // Восьмеричная система
-	var numHexadecimal int = 0x2A     // Шестнадцатиричная система
-	var pi float64 = 3.14             // Тип float64
-	var name string = "Golang"        // Тип string
-	var isActive bool = true          // Тип bool
-	var complexNum complex64 = 1 + 2i // Тип complex64
+	var originalSlice []int
+	for i := 0; i < 10; i++ {
+		originalSlice = append(originalSlice, rand.Intn(100))
+	}
 
-	Second(numDecimal, numOctal, numHexadecimal, pi, name, isActive, complexNum)
-	newStr := Third(numDecimal, numOctal, numHexadecimal, pi, name, isActive, complexNum)
-	newRunes := Fourth(newStr)
-	fmt.Println(Fifths(newRunes))
+	fmt.Println(SliceExample(originalSlice))
+	fmt.Println(AddElement(originalSlice, 5))
+	fmt.Println(CopySlice(originalSlice))
+	fmt.Println(RemoveElement(originalSlice, 2))
 
 }
 
-func Second(dec, oct, hex int, fl float64, str string, bin bool, compl complex64) {
-	fmt.Println("type of your number is :", GiveTypes(dec))
-	fmt.Println("type of your number is :", GiveTypes(oct))
-	fmt.Println("type of your number is :", GiveTypes(hex))
-	fmt.Println("type of your number is :", GiveTypes(fl))
-	fmt.Println("type of your number is :", GiveTypes(str))
-	fmt.Println("type of your number is :", GiveTypes(bin))
-	fmt.Println("type of your number is :", GiveTypes(compl))
+func SliceExample(orSl []int) []int {
+	var newSl []int
+	for _, v := range orSl {
+		if v%2 == 0 {
+			newSl = append(newSl, v)
+		}
+	}
+	return newSl
 }
 
-func GiveTypes[T any](num T) reflect.Type {
-	return reflect.TypeOf(num)
+func AddElement[T any](slice []T, el ...T) []T {
+	totalLength := len(slice) + len(el)
+	if totalLength <= cap(slice) {
+		slice = slice[:totalLength]
+	} else {
+		newSlice := make([]T, totalLength)
+		copy(newSlice, slice)
+		slice = newSlice
+	}
+	copy(slice[len(slice)-len(el):], el)
+	return slice
 }
 
-func Third(dec, oct, hex int, fl float64, str string, bin bool, compl complex64) string {
-	return StringReturn(dec) + StringReturn(oct) + StringReturn(hex) + StringReturn(fl) + str + StringReturn(bin) + StringReturn(compl)
+func CopySlice[T any](slice []T) []T {
+	var sliceRet []T
+	for _, v := range slice {
+		sliceRet = append(sliceRet, v)
+	}
+	return sliceRet
 }
 
-func StringReturn[T any](num T) string {
-	return fmt.Sprintf("%v", num)
-}
-
-func Fourth(str string) []rune {
-	return []rune(str)
-}
-
-func Fifths(runes []rune) string {
-	hasher := sha256.New()
-	var salt []rune
-	salt = []rune("go-2024")
-	var runesSalt []rune
-	runesSalt = append(runesSalt, runes[0:len(runes)/2]...)
-	runesSalt = append(runesSalt, salt...)
-	runesSalt = append(runesSalt, runes[(len(runes)/2):]...)
-	fmt.Println(string(runesSalt))
-	hasher.Write([]byte(string(runesSalt)))
-	return hex.EncodeToString(hasher.Sum(nil))
+func RemoveElement[T any](slice []T, index int) []T {
+	sliceRt := slice[:index]
+	sliceRt = append(sliceRt, slice[index+1:]...)
+	return sliceRt
 }
