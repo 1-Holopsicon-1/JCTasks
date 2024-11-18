@@ -1,23 +1,22 @@
 package main
 
 import (
-	"reflect"
 	"testing"
 )
 
-func TestFindMatch(t *testing.T) {
-	arr1 := []int{65, 3, 58, 678, 64}
-	arr2 := []int{64, 2, 3, 43}
-	arr3 := []int{64, 3}
-	if outB, outAr := FindMatch(arr1, arr2); !reflect.DeepEqual(outAr, arr3) || !outB {
-		t.Errorf("Output %v, %t not equal to expected %v", outAr, outB, arr3)
-
+func TestChanRandomiser(t *testing.T) {
+	maxValue := 100
+	count := 10
+	randomCh := make(chan int)
+	go ChanRandomiser(count, maxValue, randomCh)
+	counter := 0
+	for v := range randomCh {
+		if v > 100 {
+			t.Errorf("Max value more then sended %v", v)
+		}
+		counter++
 	}
-	arr1 = []int{65, 3, 58, 678, 64}
-	arr2 = []int{77, 77, 77, 77}
-	arr3 = []int{}
-	if outB, outAr := FindMatch(arr1, arr2); reflect.DeepEqual(outAr, arr3) || outB {
-		t.Errorf("Output %v, %t not equal to expected %v", outAr, outB, arr3)
-
+	if counter != 10 {
+		t.Errorf("Not enough items %v", counter)
 	}
 }
