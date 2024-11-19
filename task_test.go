@@ -4,19 +4,39 @@ import (
 	"testing"
 )
 
-func TestChanRandomiser(t *testing.T) {
-	maxValue := 100
-	count := 10
-	randomCh := make(chan int)
-	go ChanRandomiser(count, maxValue, randomCh)
-	counter := 0
-	for v := range randomCh {
-		if v > 100 {
-			t.Errorf("Max value more then sended %v", v)
+func TestMergeChanels(t *testing.T) {
+	ch1 := make(chan int)
+	ch2 := make(chan int)
+	ch3 := make(chan int)
+	go func() {
+		for i := 0; i < 5; i++ {
+			ch1 <- i
 		}
-		counter++
+		close(ch1)
+	}()
+	go func() {
+		for i := 5; i < 10; i++ {
+			ch2 <- i
+		}
+		close(ch2)
+	}()
+	go func() {
+		for i := 10; i < 15; i++ {
+			ch3 <- i
+		}
+		close(ch3)
+	}()
+	merged := MergeChanels(ch1, ch2, ch3)
+	expected := make(map[int]interface{})
+	for i := 0; i < 15; i++ {
+		expected[i] = ""
 	}
-	if counter != 10 {
-		t.Errorf("Not enough items %v", counter)
+	var findUnmatched bool
+	for v := range merged {
+		_, findUnmatched = expected[v]
+		if !findUnmatched {
+			t.Errorf("Error cant find existing variable")
+		}
 	}
+
 }
